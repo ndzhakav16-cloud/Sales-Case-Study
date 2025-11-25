@@ -1,0 +1,25 @@
+
+
+SELECT
+  `Date`,
+  Sales,
+  `Quantity Sold`,
+  (Sales / `Quantity Sold`) AS Unit_Price,
+  SUM(Sales) OVER () / SUM(`Quantity Sold`) OVER () AS Avg_Unit_Price,
+  `Cost Of Sales`,
+  ((Sales - `Cost Of Sales`) / Sales) * 100 AS Daily_Gross_Profit,
+  (Sales - `Cost Of Sales`) / `Quantity Sold` AS Gross_Profit_per_Unit,
+
+  -- Promo period flags
+  CASE WHEN `Date` BETWEEN '2023-02-01' AND '2023-02-10' THEN 1 ELSE 0 END AS Promo_1,
+  CASE WHEN `Date` BETWEEN '2023-04-01' AND '2023-04-08' THEN 1 ELSE 0 END AS Promo_2,
+  CASE WHEN `Date` BETWEEN '2023-06-01' AND '2023-06-12' THEN 1 ELSE 0 END AS Promo_3,
+  
+  -- Aggregate KPIs (same for all rows, for dashboarding)
+  SUM(Sales) OVER () AS Total_Sales,
+  SUM(`Cost Of Sales`) OVER () AS Total_Cost,
+  SUM(Sales - `Cost Of Sales`) OVER () AS Total_Gross_Profit,
+  SUM(`Quantity Sold`) OVER () AS Total_Units,
+  AVG(Sales / `Quantity Sold`) OVER () AS Avg_Price,
+  AVG((Sales - `Cost Of Sales`) / Sales) OVER () * 100 AS Avg_GrossProfit
+FROM workspace.default.sales_case_study_4;
